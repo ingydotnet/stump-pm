@@ -1,19 +1,17 @@
 ##
 # name:      Stump::Heavy
-# abstract:  Larry's Fault
+# abstract:  Mostly Larry's Fault
 # author:    Larry Wall via Ingy döt Net <ingy@cpan.org>
 # license:   perl
 # copyright: 2011
 
+use 5.010;
 package Stump::Heavy;
 use strict;
 use warnings;
 
-sub para2odp {
-
-# Start with Larry's exact code as given to Ingy @ YAPC::Riga 2011:
-#!/usr/bin/perl
-use 5.010;
+# What follows is an ongoing refactoring of Larry's original code as given to
+# Ingy @ YAPC::Riga 2011:
 
 use utf8;
 
@@ -38,19 +36,24 @@ binmode(STDIN, ':utf8');
 binmode(STDOUT, ':utf8');
 binmode(STDERR, ':utf8');
 
-my $file = shift;
-my $template = "Sample";
-die "Invalid template" unless -e "$template.odp";
-system "cp $template.odp $file.odp";
-sleep 1;
-system "mkdir $template; cd $template; unzip ../$template.odp" unless -d $template;
-open CONTENT, ">:utf8", "$template/content.xml" or die "Can't create $template/content.xml: $!";
-system "rm -rf $template/Pictures/*";
+sub para2odp {
+
+my $input = 'stump.input';
+my $build = 'stump';
+
+# die "Invalid template" unless -e "$template.odp";
+# system "cp $template.odp $file.odp";
+# sleep 1;
+# system "mkdir $template; cd $template; unzip ../$template.odp" unless -d $template;
+
+open CONTENT, ">:utf8", "$build/content.xml"
+    or die "Can't create $build/content.xml: $!";
+system "rm -rf $build/Pictures/*";
 
 my $text;
 my @para;
 {
-    open IN, '<:utf8', $file or die "Can't open $file: $!";
+    open IN, '<:utf8', $input or die "Can't open $input: $!";
     local $/ = "";
     chomp(@para = <IN>);
     close IN;
@@ -200,15 +203,16 @@ END
 
 my $page = 0;
 
+use Cwd ();
 for (@para) {
     $page++;
     my $verbatim = /^\s/;
     s/^    //mg if $verbatim;
     s/^`//mg;
     if (/\bi:(.*)/) {
-      my $name = $1;
+      my $name = Cwd::abs_path("image/$1");
       (my $safename = $name) =~ s/\//__/g;
-      system "cp $name $template/Pictures/$safename";
+      system "cp $name $build/Pictures/$safename";
       print CONTENT <<"END";
       <draw:page draw:style-name='dp1' draw:name='page$page' draw:master-page-name='Default'>
         <office:forms form:automatic-focus='false' form:apply-design-mode='false' />
@@ -337,7 +341,7 @@ print CONTENT <<'END';
 </office:document-content>
 END
 
-system("chdir $template; zip -r -u ../$file.odp *");
+system("chdir $build; zip -r -u ../stump.odp *");
 
 }
 

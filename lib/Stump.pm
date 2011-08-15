@@ -8,7 +8,12 @@
 use 5.010;
 package Stump;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
+
+use File::Share 0.01 ();
+use IO::All 0.43 ();
+use Template::Toolkit::Simple 0.13 ();
+use YAML::XS 0.35 ();
 
 #-----------------------------------------------------------------------------#
 package Stump::Command;
@@ -60,6 +65,16 @@ has force => (
 
 sub execute {
     my ($self, $opt, $args) = @_;
+
+    if ($self->empty_directory or $self->force) {
+        my $share = $self->share;
+        $self->copy_file("$share/stump.input", "./stump.input");
+        $self->copy_file("$share/conf.yaml", "./conf.yaml");
+        $self->copy_files("$share/image", "./image");
+    }
+    else {
+        $self->error__wont_init;
+    }
 }
 
 #-----------------------------------------------------------------------------#
@@ -68,13 +83,18 @@ Stump->import( -command );
 use Mouse;
 extends qw[Stump::Command];
 
+use IO::All;
+
 use constant abstract => 'Make a Stump ODP Presentation';
 use constant usage_desc => 'stump make';
 
 sub execute {
-    my ($self, $opt, $args) = @_;
     require Stump::Heavy;
-    Stump::Heavy::para2odp('Sample');
+    my ($self, $opt, $args) = @_;
+    my $share = $self->share;
+    $self->copy_files("$share/stump", "./stump");
+    Stump::Heavy::para2odp();
+    io('stump')->rmtree;
 }
 
 #-----------------------------------------------------------------------------#
@@ -88,7 +108,63 @@ use constant usage_desc => 'stump speech';
 
 sub execute {
     my ($self, $opt, $args) = @_;
-    exec 'ooimpress Sample.odp';
+    exec 'ooimpress -show stump.odp';
+}
+
+#-----------------------------------------------------------------------------#
+# Helper methods
+#-----------------------------------------------------------------------------#
+package Stump::Command;
+use File::Share;
+use IO::All;
+use Cwd qw[cwd abs_path];
+use YAML::XS;
+
+has conf => (
+    is => 'ro',
+    lazy => 1,
+    builder => sub {
+        my $self = shift;
+        YAML::XS::LoadFile('conf.yaml');
+    },
+);
+
+sub share {
+    File::Share::dist_dir('Stump');
+}
+
+sub empty_directory {
+    io('.')->empty;
+}
+
+sub copy_file {
+    my ($self, $source, $target) = @_;
+    my $file = io($source);
+    io("$target")->assert->print($file->all);
+}
+
+sub copy_files {
+    my ($self, $source, $target) = @_;
+    for my $file (io($source)->All_Files) {
+        my $short = $file->name;
+        $short =~ s!^\Q$source\E/?!! or die $short;
+        next if $short =~ /^\./;
+        io("$target/$short")->assert->print($file->all);
+    }
+}
+
+sub error {
+    my ($self, $msg) = splice(@_, 0, 2);
+    chomp $msg;
+    $msg .= $/;
+    die sprintf($msg, @_);
+}
+
+sub error__wont_init {
+    my ($self) = @_;
+    $self->error(
+        "Won't 'init' in a non empty directory, unless you use --force"
+    );
 }
 
 1;
@@ -103,7 +179,7 @@ sub execute {
 
 Stump is Larry Wall's slideshow presentation hacks, packaged up for CPAN.
 
-It takes a simple input format and some pictures and whatnot, and compiles
+Stump takes a simple input format and some pictures and whatnot, and compiles
 them into a OpenDocument (.odp) file that you view with your favorite
 slideshow software.
 

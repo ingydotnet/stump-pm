@@ -1,0 +1,3 @@
+# This is the Stump configuration file
+
+start_command: ooimpress -start stump.odp
