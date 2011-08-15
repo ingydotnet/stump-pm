@@ -1,4 +1,9 @@
 ---
+version: 0.02
+date:    Mon Aug 15 15:30:53 EEST 2011
+changes:
+- Make it actually work...
+---
 version: 0.01
 date:    Mon Aug 15 13:04:38 EEST 2011
 changes:

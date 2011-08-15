@@ -36,15 +36,16 @@ binmode(STDIN, ':utf8');
 binmode(STDOUT, ':utf8');
 binmode(STDERR, ':utf8');
 
+
 sub para2odp {
 
 my $input = 'stump.input';
 my $build = 'stump';
+my $template = 'stump.odp';
 
-# die "Invalid template" unless -e "$template.odp";
-# system "cp $template.odp $file.odp";
-# sleep 1;
-# system "mkdir $template; cd $template; unzip ../$template.odp" unless -d $template;
+die "Invalid template" unless -e $template;
+system "mkdir $build; cd $build; unzip ../$template"
+    unless -d $build;
 
 open CONTENT, ">:utf8", "$build/content.xml"
     or die "Can't create $build/content.xml: $!";

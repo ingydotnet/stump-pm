@@ -12,7 +12,7 @@ our $VERSION = '0.02';
 
 use File::Share 0.01 ();
 use IO::All 0.43 ();
-use Template::Toolkit::Simple 0.13 ();
+# use Template::Toolkit::Simple 0.13 ();
 use YAML::XS 0.35 ();
 
 #-----------------------------------------------------------------------------#
@@ -92,7 +92,7 @@ sub execute {
     require Stump::Heavy;
     my ($self, $opt, $args) = @_;
     my $share = $self->share;
-    $self->copy_files("$share/stump", "./stump");
+    $self->copy_file("$share/stump.odp", "./stump.odp");
     Stump::Heavy::para2odp();
     io('stump')->rmtree;
 }
@@ -108,7 +108,21 @@ use constant usage_desc => 'stump speech';
 
 sub execute {
     my ($self, $opt, $args) = @_;
-    exec 'ooimpress -show stump.odp';
+    exec $self->conf->{start_command};
+}
+
+#-----------------------------------------------------------------------------#
+package Stump::Command::clean;
+Stump->import( -command );
+use Mouse;
+extends qw[Stump::Command];
+
+use constant abstract => 'Cleanup generated files';
+use constant usage_desc => 'stump clean';
+
+sub execute {
+    my ($self, $opt, $args) = @_;
+    system('rm -fr stump stump.odp');
 }
 
 #-----------------------------------------------------------------------------#
@@ -172,6 +186,7 @@ sub error__wont_init {
 =head1 SYNOPSIS
 
     > stump init
+    > edit stump.input
     > stump make
     > stump speech
 
