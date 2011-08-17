@@ -15,10 +15,6 @@ DESCRIPTION
     compiles them into a OpenDocument (.odp) file that you view with your
     favorite slideshow software.
 
-STATUS
-    WARNING: THIS IS A VERY EARLY RELEASE. PLEASE GO AWAY NOW. WAIT FOR 0.10
-    BEFORE YOU USE THIS.
-
 AUTHOR
     Larry Wall via Ingy döt Net <ingy@cpan.org>
 

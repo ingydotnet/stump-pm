@@ -8,7 +8,7 @@
 use 5.010;
 package Stump;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use File::Share 0.01 ();
 use IO::All 0.43 ();
@@ -71,6 +71,7 @@ sub execute {
         $self->copy_file("$share/stump.input", "./stump.input");
         $self->copy_file("$share/conf.yaml", "./conf.yaml");
         $self->copy_files("$share/image", "./image");
+        $self->init_ok_msg;
     }
     else {
         $self->error__wont_init;
@@ -89,12 +90,8 @@ use constant abstract => 'Make a Stump ODP Presentation';
 use constant usage_desc => 'stump make';
 
 sub execute {
-    require Stump::Heavy;
     my ($self, $opt, $args) = @_;
-    my $share = $self->share;
-    $self->copy_file("$share/stump.odp", "./stump.odp");
-    Stump::Heavy::para2odp();
-    io('stump')->rmtree;
+    $self->make;
 }
 
 #-----------------------------------------------------------------------------#
@@ -108,7 +105,17 @@ use constant usage_desc => 'stump speech';
 
 sub execute {
     my ($self, $opt, $args) = @_;
-    exec $self->conf->{start_command};
+
+    my $start_command = $self->conf->{start_command}
+        or die "No 'start_command' in conf.yaml";
+
+    $self->make
+        if $self->conf->{auto_make} and (
+            not -e 'stump.odp' or
+            -M 'stump.input' < -M 'stump.odp'
+        );
+
+    exec $start_command;
 }
 
 #-----------------------------------------------------------------------------#
@@ -134,14 +141,27 @@ use IO::All;
 use Cwd qw[cwd abs_path];
 use YAML::XS;
 
-has conf => (
+has _conf => (
+    reader => 'conf',
     is => 'ro',
     lazy => 1,
     builder => sub {
         my $self = shift;
-        YAML::XS::LoadFile('conf.yaml');
+        my $file = 'conf.yaml';
+        die "There is no conf.yaml file.\n"
+            unless -e $file;
+        YAML::XS::LoadFile($file);
     },
 );
+
+sub make {
+    require Stump::Heavy;
+    my ($self) = @_;
+    my $share = $self->share;
+    $self->copy_file("$share/stump.odp", "./stump.odp");
+    Stump::Heavy::para2odp();
+    io('stump')->rmtree;
+}
 
 sub share {
     File::Share::dist_dir('Stump');
@@ -165,6 +185,19 @@ sub copy_files {
         next if $short =~ /^\./;
         io("$target/$short")->assert->print($file->all);
     }
+}
+
+sub init_ok_msg {
+    print <<'...';
+
+Stump slideshow created.
+
+Now edit 'stump.input' and 'conf.yaml' and run:
+
+    stump make
+    stump speech
+
+...
 }
 
 sub error {
@@ -197,9 +230,3 @@ Stump is Larry Wall's slideshow presentation hacks, packaged up for CPAN.
 Stump takes a simple input format and some pictures and whatnot, and compiles
 them into a OpenDocument (.odp) file that you view with your favorite
 slideshow software.
-
-=head1 STATUS
-
-WARNING: THIS IS A VERY EARLY RELEASE. PLEASE GO AWAY NOW. WAIT FOR 0.10
-BEFORE YOU USE THIS.
-

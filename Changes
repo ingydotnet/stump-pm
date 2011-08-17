@@ -1,4 +1,9 @@
 ---
+version: 0.03
+date:    Wed Aug 17 11:57:51 EEST 2011
+changes:
+- Remove conf as option
+---
 version: 0.02
 date:    Mon Aug 15 15:30:53 EEST 2011
 changes:
