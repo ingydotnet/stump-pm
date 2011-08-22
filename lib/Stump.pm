@@ -8,8 +8,9 @@
 use 5.010;
 package Stump;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
+use App::Cmd 0.312 ();
 use File::Share 0.01 ();
 use IO::All 0.43 ();
 # use Template::Toolkit::Simple 0.13 ();
