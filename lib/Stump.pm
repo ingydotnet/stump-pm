@@ -8,9 +8,10 @@
 use 5.010;
 package Stump;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use Mouse 0.93 ();
+use MouseX::App::Cmd 0.08 ();
 use App::Cmd 0.312 ();
 use File::Share 0.01 ();
 use IO::All 0.43 ();
