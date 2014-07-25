@@ -1,22 +1,13 @@
-##
-# name:      Stump
-# abstract:  Larry Wall's Slideshow Software
-# author:    Larry Wall via Ingy döt Net <ingy@cpan.org>
-# license:   perl
-# copyright: 2011
-
-use 5.010;
+use strict; use warnings;
 package Stump;
+our $VERSION = '0.07';
 
-our $VERSION = '0.06';
-
-use Mouse 0.93 ();
-use MouseX::App::Cmd 0.08 ();
-use App::Cmd 0.312 ();
-use File::Share 0.01 ();
-use IO::All 0.43 ();
-# use Template::Toolkit::Simple 0.13 ();
-use YAML::XS 0.35 ();
+use Mouse;
+use MouseX::App::Cmd;
+use App::Cmd;
+use File::Share;
+use IO::All;
+use YAML::XS;
 
 #-----------------------------------------------------------------------------#
 package Stump::Command;
@@ -218,18 +209,3 @@ sub error__wont_init {
 }
 
 1;
-
-=head1 SYNOPSIS
-
-    > stump init
-    > edit stump.input
-    > stump make
-    > stump speech
-
-=head1 DESCRIPTION
-
-Stump is Larry Wall's slideshow presentation hacks, packaged up for CPAN.
-
-Stump takes a simple input format and some pictures and whatnot, and compiles
-them into a OpenDocument (.odp) file that you view with your favorite
-slideshow software.

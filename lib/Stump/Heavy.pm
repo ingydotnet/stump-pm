@@ -1,14 +1,5 @@
-##
-# name:      Stump::Heavy
-# abstract:  Mostly Larry's Fault
-# author:    Larry Wall via Ingy döt Net <ingy@cpan.org>
-# license:   perl
-# copyright: 2011
-
-use 5.010;
+use strict; use warnings;
 package Stump::Heavy;
-use strict;
-use warnings;
 
 # What follows is an ongoing refactoring of Larry's original code as given to
 # Ingy @ YAPC::Riga 2011:
