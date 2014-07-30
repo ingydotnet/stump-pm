@@ -1,6 +1,6 @@
 use strict; use warnings;
 package Stump;
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use Mouse;
 use MouseX::App::Cmd;

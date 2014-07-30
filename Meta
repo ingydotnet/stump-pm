@@ -1,7 +1,7 @@
 =meta: 0.0.1
 
 name: Stump
-version: 0.07
+version: 0.08
 abstract: Larry Wall's Slideshow Software
 homepage: https://metacpan.org/release/Stump
 
@@ -27,8 +27,8 @@ requires:
 devel:
   git: https://github.com/ingydotnet/stump-pm
   bug: https://github.com/ingydotnet/stump-pm/issues
-  irc: irc.freenode.net#ingy
+  irc: irc.freenode.net#pkg
 
 =travis:
   type: perl
-  irc: irc.freenode.net#ingy
+  irc: irc.freenode.net#pkg
