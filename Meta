@@ -1,19 +1,25 @@
-=meta: 0.0.1
+=meta: 0.0.2
 
 name: Stump
-version: 0.11
+version: 0.12
 abstract: Larry Wall's Slideshow Software
 homepage: https://metacpan.org/release/Stump
-
+language: perl
 license: perl
-copyright: 2011-2014. Ingy döt Net.
+copyright: 2011-2014
+
 author:
   name: Ingy döt Net
   email: ingy@cpan.org
+  homepage: http://ingy.net
   github: ingydotnet
   twitter: ingydotnet
   freenode: ingy
-  homepage: http://ingy.net
+
+devel:
+  git: https://github.com/ingydotnet/stump-pm
+  bug: https://github.com/ingydotnet/stump-pm/issues
+  irc: irc.freenode.net#pkg
 
 requires:
   perl: 5.8.1
@@ -23,12 +29,3 @@ requires:
   File::Share: 0.01
   IO::All: 0.43
   YAML::XS: 0.35
-
-devel:
-  git: https://github.com/ingydotnet/stump-pm
-  bug: https://github.com/ingydotnet/stump-pm/issues
-  irc: irc.freenode.net#pkg
-
-=travis:
-  type: perl
-  irc: irc.freenode.net#pkg
