@@ -1,7 +1,7 @@
 =meta: 0.0.2
 
 name: Stump
-version: 0.12
+version: 0.13
 abstract: Larry Wall's Slideshow Software
 homepage: https://metacpan.org/release/Stump
 language: perl

@@ -100,7 +100,7 @@ print CONTENT <<'END';
     </style:style>
 END
     for my $pt (5..20,25,30,40,50) {
-	print CONTENT <<"END";
+        print CONTENT <<"END";
     <style:style style:name='M$pt' style:family='text'>
       <style:text-properties style:font-size-complex='${pt}pt' fo:font-family='&apos;Liberation Mono&apos;' style:font-family-generic='modern' style:font-size-asian='${pt}pt' style:font-pitch='fixed' fo:color='#000000' fo:font-size='${pt}pt' />
     </style:style>
@@ -217,13 +217,13 @@ for (@para) {
 END
     }
     elsif (/\bh:(.*)/) {
-	my $link = $1;
-	print CONTENT <<"END";
+        my $link = $1;
+        print CONTENT <<"END";
       <draw:page draw:style-name='dp3' draw:name='page$page' draw:master-page-name='Default'>
         <draw:frame svg:y='4cm' draw:style-name='takahashi' svg:x='5cm' draw:layer='layout' draw:text-style-name='P3'>
           <draw:text-box>
             <text:p text:style-name='P3'>
-		<text:a xlink:href='http:$link'>http:$link</text:a>
+                <text:a xlink:href='http:$link'>http:$link</text:a>
             </text:p>
           </draw:text-box>
         </draw:frame>
@@ -231,15 +231,15 @@ END
 END
     }
     elsif (/\bf:(.*)/) {
-	my $file = $1;
-	print CONTENT <<"END";
+        my $file = $1;
+        print CONTENT <<"END";
       <draw:page draw:style-name='dp3' draw:name='page$page' draw:master-page-name='Default'>
         <draw:frame svg:y='4cm' draw:style-name='takahashi' svg:x='5cm' draw:layer='layout' draw:text-style-name='P3'>
           <draw:text-box>
             <text:p text:style-name='P1'>
-		<text:span text:style-name='M5'>
-		<text:a xlink:href='file:$file'>$file</text:a>
-		</text:span>
+                <text:span text:style-name='M5'>
+                <text:a xlink:href='file:$file'>$file</text:a>
+                </text:span>
             </text:p>
           </draw:text-box>
         </draw:frame>
@@ -247,82 +247,82 @@ END
 END
     }
     else {
-	my @lines = split(/^/, $_);
-	my $maxlen = 1;
-	for my $line (@lines) {
-	    $line =~ s/\t/        /g;
-	    $line =~ s/( +)/"\xa0" x length($1)/ge;
-	    my $temp = $line;
-	    $temp =~ s/`?\b([a-zA-Z])<(.*?)>/$2/g;
-	    $temp =~ s/`?\b([a-zA-Z])://g;
-	    $temp =~ s/[\x{2000}-\x{ffff}]/XXX/g;
-	    $maxlen = length($temp) if $maxlen < length($temp);
-	}
-	for my $line (@lines) {
-	    $line =~ s/`?\b([a-zA-Z])<(.*?)>/<text:span text:style-name='$COLOR{$1}'>$2<\/text:span>/g;
-	    $line =~ s/`?\b([a-zA-Z]):(.*)/<text:span text:style-name='$COLOR{$1}'>$2<\/text:span>/g;
-	}
-	if ($verbatim) {
-	    print CONTENT <<"END";
+        my @lines = split(/^/, $_);
+        my $maxlen = 1;
+        for my $line (@lines) {
+            $line =~ s/\t/        /g;
+            $line =~ s/( +)/"\xa0" x length($1)/ge;
+            my $temp = $line;
+            $temp =~ s/`?\b([a-zA-Z])<(.*?)>/$2/g;
+            $temp =~ s/`?\b([a-zA-Z])://g;
+            $temp =~ s/[\x{2000}-\x{ffff}]/XXX/g;
+            $maxlen = length($temp) if $maxlen < length($temp);
+        }
+        for my $line (@lines) {
+            $line =~ s/`?\b([a-zA-Z])<(.*?)>/<text:span text:style-name='$COLOR{$1}'>$2<\/text:span>/g;
+            $line =~ s/`?\b([a-zA-Z]):(.*)/<text:span text:style-name='$COLOR{$1}'>$2<\/text:span>/g;
+        }
+        if ($verbatim) {
+            print CONTENT <<"END";
       <draw:page draw:style-name='dp3' draw:name='page$page' draw:master-page-name='Default'>
         <draw:frame svg:y='2cm' draw:style-name='middling' svg:x='0.4cm' draw:layer='layout' svg:width='10.5cm' svg:height='3.639cm' draw:text-style-name='P1'>
           <draw:text-box>
 END
-	    my $t = 'M' . (
-		$maxlen > 70 ? 5 :
-		$maxlen > 50 ? 7 :
-		$maxlen > 40 ? 9 :
-		$maxlen > 30 ? 12 :
-		$maxlen > 20 ? 14 :
-		$maxlen > 10 ? 20 :
-		30
-	    );
-	    for my $line (@lines) {
-		print CONTENT <<"END";
+            my $t = 'M' . (
+                $maxlen > 70 ? 5 :
+                $maxlen > 50 ? 7 :
+                $maxlen > 40 ? 9 :
+                $maxlen > 30 ? 12 :
+                $maxlen > 20 ? 14 :
+                $maxlen > 10 ? 20 :
+                30
+            );
+            for my $line (@lines) {
+                print CONTENT <<"END";
             <text:p text:style-name='P1'>
               <text:span text:style-name='$t'>$line</text:span>
             </text:p>
 END
-	    }
-	    print CONTENT <<"END";
+            }
+            print CONTENT <<"END";
           </draw:text-box>
         </draw:frame>
       </draw:page>
 END
-	}
-	else {
-	    print CONTENT <<"END";
+        }
+        else {
+            print CONTENT <<"END";
       <draw:page draw:style-name='dp3' draw:name='page3' draw:master-page-name='Default'>
         <draw:frame svg:y='4cm' draw:style-name='takahashi' svg:x='5cm' draw:layer='layout' draw:text-style-name='P3'>
           <draw:text-box>
 END
-	    my $t = 'S' . (
-		$maxlen > 70 ? 5 :
-		$maxlen > 60 ? 7 :
-		$maxlen > 50 ? 8 :
-		$maxlen > 45 ? 9 :
-		$maxlen > 40 ? 10 :
-		$maxlen > 35 ? 11 :
-		$maxlen > 28 ? 14 :
-		$maxlen > 24 ? 17 :
-		$maxlen > 20 ? 20 :
-		$maxlen > 15 ? 25 :
-		$maxlen > 10 ? 30 :
-		$maxlen > 8 ? 35 : 40
-	    );
-	    for my $line (@lines) {
-		print CONTENT <<"END";
+            my $t = 'S' . (
+                $maxlen > 70 ? 5 :
+                $maxlen > 60 ? 7 :
+                $maxlen > 50 ? 8 :
+                $maxlen > 45 ? 9 :
+                $maxlen > 40 ? 10 :
+                $maxlen > 35 ? 11 :
+                $maxlen > 28 ? 14 :
+                $maxlen > 24 ? 17 :
+                $maxlen > 20 ? 20 :
+                $maxlen > 15 ? 25 :
+                $maxlen > 10 ? 30 :
+                $maxlen > 8 ? 35 : 40
+            );
+            for my $line (@lines) {
+                print CONTENT <<"END";
             <text:p text:style-name='P3'>
               <text:span text:style-name='$t'>$line</text:span>
             </text:p>
 END
-	    }
-	    print CONTENT <<"END";
+            }
+            print CONTENT <<"END";
           </draw:text-box>
         </draw:frame>
       </draw:page>
 END
-	}
+        }
     }
 }
 
